@@ -1,0 +1,78 @@
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+<div id="app">
+  <h1>parent and child view lifecycle method in nest route</h1>
+  <p>
+    <router-link to="/user/foo">/user/foo</router-link>
+    <router-link to="/user/foo/profile">/user/foo/profile</router-link>
+    <router-link to="/user/foo/posts">/user/foo/posts</router-link>
+  </p>
+  <router-view></router-view>
+</div>
+<script>
+const User = {
+  template: `
+    <div class="user">
+      <h2>User {{ $route.params.id }}</h2>
+      <router-view></router-view>
+    </div>
+  `,
+  created() {
+    console.log('User.created')
+  },
+  mounted() {
+    console.log('User.mounted')
+  }
+}
+
+const UserHome = {
+  template: '<div>Home</div>',
+  created() {
+    console.log('UserHome.created')
+  },
+  mounted() {
+    console.log('UserHome.mounted')
+  }
+}
+const UserProfile = { 
+  template: '<div>Profile</div>',
+  created() {
+    console.log('UserProfile.created')
+  },
+  mounted() {
+    console.log('UserProfile.mounted')
+  }
+}
+const UserPosts = {
+  template: '<div>Posts</div>',
+  created() {
+    console.log('UserPosts.created')
+  },
+  mounted() {
+    console.log('UserPosts.mounted')
+  }
+}
+
+const router = new VueRouter({
+  routes: [
+    { path: '/user/:id', component: User,
+      children: [
+        // UserHome will be rendered inside User's <router-view>
+        // when /user/:id is matched
+        { path: '', component: UserHome },
+				
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        { path: 'profile', component: UserProfile },
+
+        // UserPosts will be rendered inside User's <router-view>
+        // when /user/:id/posts is matched
+        { path: 'posts', component: UserPosts }
+      ]
+    }
+  ]
+})
+
+const app = new Vue({ router }).$mount('#app')
+</script>
